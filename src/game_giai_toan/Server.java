@@ -174,17 +174,18 @@ public class Server {
                     if (loginedUser.size() == 2) {
                         out.writeObject(ProjectStatus.PLAY);
                         out.writeObject(questions); // gửi câu hỏi
-//                        ProjectStatus status = (ProjectStatus) in.readObject();
-//                        if (status == ProjectStatus.TIMEOUT) {
-//                            int score = (int) in.readObject();
-//                            out.writeObject(ProjectStatus.SENDRESULT);
-//                            System.out.println("SEND RESULT");
-//                            out.writeObject(score);
-//                        }
+
                         break;
                     }
                 }
                 
+                ProjectStatus status = (ProjectStatus) in.readObject();
+                if (status == ProjectStatus.TIMEOUT) {
+                    int score = (int) in.readObject();
+                    out.writeObject(ProjectStatus.SENDRESULT);
+                    System.out.println("SEND RESULT");
+                    out.writeObject(score);
+                }
                 
                 
 //                ProjectStatus status = (ProjectStatus) in.readObject();
@@ -223,16 +224,16 @@ public class Server {
 //                }
             } catch (Exception e) {
             }
-//            finally {
-//                if (userName != "") {
-//                    loginedUser.remove(userName);
-//                }
-//                try {
-//                    client.close();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
+            finally {
+                if (userName != "") {
+                    loginedUser.remove(userName);
+                }
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

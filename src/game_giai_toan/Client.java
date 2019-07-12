@@ -50,9 +50,11 @@ public class Client {
             gameController = new GameController(out);
             gameController.showGameForm();
             ProjectStatus status = null;
+            
             while(true){
                 status = (ProjectStatus) in.readObject();
                 if (status == ProjectStatus.PLAY) {
+                    
                     break;
                 }
             }

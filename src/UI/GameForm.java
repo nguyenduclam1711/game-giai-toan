@@ -122,7 +122,7 @@ public class GameForm extends JFrame implements ActionListener {
                 progressBar.setValue(i);
                 progressBar.repaint();
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (Exception e) {
                 }
             }
