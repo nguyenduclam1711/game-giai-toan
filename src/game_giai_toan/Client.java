@@ -46,26 +46,30 @@ public class Client {
                     loginController.showAlreadyLogined();
                 }
             }
+            
             gameController = new GameController(out);
-            ProjectStatus status = (ProjectStatus) in.readObject();
-
-            if (status == ProjectStatus.STANDBY) {
-                gameController.showGameForm();
-            }
-
-            if (status == ProjectStatus.PLAY) {
-                questions = (ArrayList<Question>) in.readObject();
-                //hien thi phan choi game
-                gameController.showGameForm();
-                gameController.showTheGame();
-                gameController.initData(questions);
+            gameController.showGameForm();
+            ProjectStatus status = null;
+            while(true){
                 status = (ProjectStatus) in.readObject();
-                if (status == ProjectStatus.SENDRESULT) {
-                    System.out.println("RECCEIVED RESULT");
-                    int score = (int) in.readObject();;
-                    gameController.showResult(score);
+                if (status == ProjectStatus.PLAY) {
+                    break;
                 }
             }
+            
+            questions = (ArrayList<Question>) in.readObject();
+            //hien thi phan choi game
+            gameController.showGameForm();
+            gameController.showTheGame();
+            gameController.initData(questions);
+            
+            status = (ProjectStatus) in.readObject();
+            if (status == ProjectStatus.SENDRESULT) {
+                System.out.println("RECCEIVED RESULT");
+                int score = (int) in.readObject();;
+                gameController.showResult(score);
+            }
+            
 
 //            gameController.showGameForm();
 //            ArrayList<Question> questions = (ArrayList<Question>) in.readObject();

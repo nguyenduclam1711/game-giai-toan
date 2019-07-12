@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
@@ -30,12 +31,14 @@ public class Server {
      *Tập lưu trữ tất cả các writer của từng client
      *Giúp dễ dàng truyền tin nhắn
      */
-    private static HashSet<ObjectOutputStream> writers = new HashSet<ObjectOutputStream>();
+    private static HashSet<ObjectOutputStream> outputs = new HashSet<ObjectOutputStream>();
+    
+    
 
     /*
      *Tập lưu trữ tất cả username
      */
-    private static HashSet<String> loginedUser = new HashSet<String>();
+    private static final HashMap<String, Integer> loginedUser = new HashMap<>();
     /*
      * Port của server
      */
@@ -141,13 +144,13 @@ public class Server {
 
                     User user = (User) in.readObject(); // nhận thông tin đăng nhập từ client
                     userName = user.getUserName();
-                    
+
                     // kiểm tra thông tin đăng nhập
                     if ((user.getUserName().equals(users.get(0).getUserName()) && user.getPassWord().equals(users.get(0).getPassWord()))
                             || (user.getUserName().equals(users.get(1).getUserName()) && user.getPassWord().equals(users.get(1).getPassWord()))) {
-
-                        if (!loginedUser.contains(user.getUserName())) {
-                            loginedUser.add(userName);
+                        //synchronized(loginedUser){
+                        if (!loginedUser.containsKey(userName)) {
+                            loginedUser.put(userName, -1);
                             System.out.println("SUCCESS");
                             out.writeObject(ProjectStatus.SUCCESS);
                             break;
@@ -155,30 +158,60 @@ public class Server {
                             System.out.println("ALREADY LOGINED");
                             out.writeObject(ProjectStatus.ALREADYLOGINED);
                         }
+                        //}
                     } else {
                         System.out.println("ERROR");
                         out.writeObject(ProjectStatus.ERROR);
                     }
                 }
-                
-//                if (loginedUser.size() == 1) {
-                    out.writeObject(ProjectStatus.STANDBY);
-                    System.out.println("STAND BY PHASE");
-//                }
 
-                if (loginedUser.size() == 2) {
-                    out.writeObject(ProjectStatus.PLAY);
-                    out.writeObject(questions); // gửi câu hỏi    
-
-                    ProjectStatus status = (ProjectStatus) in.readObject();
-                    if (status == ProjectStatus.TIMEOUT) {
-                        int score = (int) in.readObject();
-                        out.writeObject(ProjectStatus.SENDRESULT);
-                        System.out.println("SEND RESULT");
-                        out.writeObject(score);
+                // tra cau hoi
+                while (true) {
+                    if (loginedUser.size() == 1) {
+                        out.writeObject(ProjectStatus.STANDBY);
+                        System.out.println("STAND BY PHASE");
+                    }
+                    if (loginedUser.size() == 2) {
+                        out.writeObject(ProjectStatus.PLAY);
+                        out.writeObject(questions); // gửi câu hỏi
+//                        ProjectStatus status = (ProjectStatus) in.readObject();
+//                        if (status == ProjectStatus.TIMEOUT) {
+//                            int score = (int) in.readObject();
+//                            out.writeObject(ProjectStatus.SENDRESULT);
+//                            System.out.println("SEND RESULT");
+//                            out.writeObject(score);
+//                        }
+                        break;
                     }
                 }
+                
+                
+                
+//                ProjectStatus status = (ProjectStatus) in.readObject();
+//                if (status == ProjectStatus.TIMEOUT) {
+//                    int score = (int) in.readObject();
+//                    out.writeObject(ProjectStatus.SENDRESULT);
+//                    System.out.println("SEND RESULT");
+//                    out.writeObject(score);
+//                }
 
+//                if (loginedUser.size() == 1) {
+//                    out.writeObject(ProjectStatus.STANDBY);
+//                    System.out.println("STAND BY PHASE");
+//                }
+//
+//                if (loginedUser.size() == 2) {
+//                    out.writeObject(ProjectStatus.PLAY);
+//                    out.writeObject(questions); // gửi câu hỏi    
+//
+//                    ProjectStatus status = (ProjectStatus) in.readObject();
+//                    if (status == ProjectStatus.TIMEOUT) {
+//                        int score = (int) in.readObject();
+//                        out.writeObject(ProjectStatus.SENDRESULT);
+//                        System.out.println("SEND RESULT");
+//                        out.writeObject(score);
+//                    }
+//                }
 //                out.writeObject(questions); // gửi câu hỏi    
 //
 //                ProjectStatus status = (ProjectStatus) in.readObject();
