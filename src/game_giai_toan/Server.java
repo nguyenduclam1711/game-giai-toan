@@ -32,8 +32,6 @@ public class Server {
      *Giúp dễ dàng truyền tin nhắn
      */
     private static HashSet<ObjectOutputStream> outputs = new HashSet<ObjectOutputStream>();
-    
-    
 
     /*
      *Tập lưu trữ tất cả username
@@ -105,7 +103,7 @@ public class Server {
                 in = new ObjectInputStream(client.getInputStream());
                 out = new ObjectOutputStream(client.getOutputStream());
                 ArrayList<Question> questions = new ArrayList<>(); // random câu hỏi
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 20; i++) {
                     Question newQuest = new Question(0, 0, 0, 0);
                     Random rand = new Random();
                     newQuest.setOperation(rand.nextInt(4));
@@ -178,53 +176,21 @@ public class Server {
                         break;
                     }
                 }
-                
-                ProjectStatus status = (ProjectStatus) in.readObject();
-                if (status == ProjectStatus.TIMEOUT) {
-                    int score = (int) in.readObject();
-                    out.writeObject(ProjectStatus.SENDRESULT);
-                    System.out.println("SEND RESULT");
-                    out.writeObject(score);
-                }
-                
-                
-//                ProjectStatus status = (ProjectStatus) in.readObject();
-//                if (status == ProjectStatus.TIMEOUT) {
-//                    int score = (int) in.readObject();
-//                    out.writeObject(ProjectStatus.SENDRESULT);
-//                    System.out.println("SEND RESULT");
-//                    out.writeObject(score);
-//                }
 
-//                if (loginedUser.size() == 1) {
-//                    out.writeObject(ProjectStatus.STANDBY);
-//                    System.out.println("STAND BY PHASE");
-//                }
-//
-//                if (loginedUser.size() == 2) {
-//                    out.writeObject(ProjectStatus.PLAY);
-//                    out.writeObject(questions); // gửi câu hỏi    
-//
-//                    ProjectStatus status = (ProjectStatus) in.readObject();
-//                    if (status == ProjectStatus.TIMEOUT) {
-//                        int score = (int) in.readObject();
-//                        out.writeObject(ProjectStatus.SENDRESULT);
-//                        System.out.println("SEND RESULT");
-//                        out.writeObject(score);
-//                    }
-//                }
-//                out.writeObject(questions); // gửi câu hỏi    
-//
-//                ProjectStatus status = (ProjectStatus) in.readObject();
-//                if (status == ProjectStatus.TIMEOUT) {
-//                    int score = (int) in.readObject();
-//                    out.writeObject(ProjectStatus.SENDRESULT);
-//                    System.out.println("SEND RESULT");
-//                    out.writeObject(score);
-//                }
+                while (true) {
+                    ProjectStatus status = (ProjectStatus) in.readObject();
+                    if (status == ProjectStatus.TIMEOUT) {
+                        break;
+                    }
+                }
+                int score = (int) in.readObject();
+                out.writeObject(ProjectStatus.SENDRESULT);
+                System.out.println("SEND RESULT");
+                out.writeObject(score);
+
+
             } catch (Exception e) {
-            }
-            finally {
+            } finally {
                 if (userName != "") {
                     loginedUser.remove(userName);
                 }

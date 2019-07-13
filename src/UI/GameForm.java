@@ -188,7 +188,6 @@ public class GameForm extends JFrame implements ActionListener {
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        new Thread(new timeThread()).start();
     }
 
     public void destroyGameForm() {
@@ -214,6 +213,7 @@ public class GameForm extends JFrame implements ActionListener {
         panel.add(btnAnswerD);
         panel.add(labelQuestion);
         panel.add(progressBar);
+        new Thread(new timeThread()).start();
         panel.revalidate();
         panel.repaint();
     }

@@ -54,14 +54,12 @@ public class Client {
             while(true){
                 status = (ProjectStatus) in.readObject();
                 if (status == ProjectStatus.PLAY) {
-                    
                     break;
                 }
             }
             
             questions = (ArrayList<Question>) in.readObject();
             //hien thi phan choi game
-            gameController.showGameForm();
             gameController.showTheGame();
             gameController.initData(questions);
             
@@ -73,17 +71,6 @@ public class Client {
             }
             
 
-//            gameController.showGameForm();
-//            ArrayList<Question> questions = (ArrayList<Question>) in.readObject();
-//            //hien thi phan choi game
-//            gameController.showTheGame();
-//            gameController.initData(questions);
-//            status = (ProjectStatus) in.readObject();
-//            if (status == ProjectStatus.SENDRESULT) {
-//                System.out.println("RECCEIVED RESULT");
-//                int score = (int) in.readObject();;
-//                gameController.showResult(score);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
