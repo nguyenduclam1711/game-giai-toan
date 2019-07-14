@@ -64,10 +64,13 @@ public class Client {
             gameController.initData(questions);
             
             status = (ProjectStatus) in.readObject();
-            if (status == ProjectStatus.SENDRESULT) {
+            if (status == ProjectStatus.SENDRESULT) { //nhận kết quả từ bên server
                 System.out.println("RECCEIVED RESULT");
-                int score = (int) in.readObject();;
-                gameController.showResult(score);
+                int score = (int) in.readObject();
+                System.out.println(score);
+                String declaredMsg = (String) in.readObject();
+                System.out.println(declaredMsg);
+                gameController.showResult(score, declaredMsg); //hiển thị kết quả
             }
             
 

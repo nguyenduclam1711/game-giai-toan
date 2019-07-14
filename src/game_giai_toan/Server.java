@@ -19,24 +19,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
 
     /*
-     *Tập lưu trữ tất cả các writer của từng client
-     *Giúp dễ dàng truyền tin nhắn
-     */
-    private static HashSet<ObjectOutputStream> outputs = new HashSet<ObjectOutputStream>();
-
-    /*
      *Tập lưu trữ tất cả username
      */
-    private static final HashMap<String, Integer> loginedUser = new HashMap<>();
+    private static HashMap<String, Integer> loginedUser = new HashMap<>();
+    private static List<Integer> scores = new Vector<>();
     /*
      * Port của server
      */
@@ -96,9 +94,31 @@ public class Server {
             return users;
         }
 
+        public void sendDeclaredMsg(List<Integer> scores, int score, ObjectOutputStream out) {
+            if (scores.get(0) == scores.get(1)) {
+                try {
+                    out.writeObject("Hòa");
+                } catch (IOException e) {
+                }
+            }
+            Collections.sort(scores);
+            if (score == scores.get(0)) {
+                try {
+                    out.writeObject("Thua cuộc");
+                } catch (IOException e) {
+                }
+            } else {
+                try {
+                    out.writeObject("Game là đễ");
+                } catch (IOException e) {
+                }
+            }
+        }
+        
         @Override
         public void run() {
             String userName = "";
+            int score = -1;
             try {
                 in = new ObjectInputStream(client.getInputStream());
                 out = new ObjectOutputStream(client.getOutputStream());
@@ -146,7 +166,7 @@ public class Server {
                     // kiểm tra thông tin đăng nhập
                     if ((user.getUserName().equals(users.get(0).getUserName()) && user.getPassWord().equals(users.get(0).getPassWord()))
                             || (user.getUserName().equals(users.get(1).getUserName()) && user.getPassWord().equals(users.get(1).getPassWord()))) {
-                        //synchronized(loginedUser){
+                        
                         if (!loginedUser.containsKey(userName)) {
                             loginedUser.put(userName, -1);
                             System.out.println("SUCCESS");
@@ -163,7 +183,7 @@ public class Server {
                     }
                 }
 
-                // tra cau hoi
+                // trả câu hỏi
                 while (true) {
                     if (loginedUser.size() == 1) {
                         out.writeObject(ProjectStatus.STANDBY);
@@ -176,18 +196,26 @@ public class Server {
                         break;
                     }
                 }
-
+                
+                //nhận score từ bên client
+                ProjectStatus status = (ProjectStatus) in.readObject();
+                if (status == ProjectStatus.TIMEOUT) {  
+                    score = (int) in.readObject();
+                    loginedUser.put(userName, score); 
+                    scores.add(score);
+                }
+                
                 while (true) {
-                    ProjectStatus status = (ProjectStatus) in.readObject();
-                    if (status == ProjectStatus.TIMEOUT) {
+                    if (scores.size() == 2) {
                         break;
                     }
                 }
-                int score = (int) in.readObject();
-                out.writeObject(ProjectStatus.SENDRESULT);
+
+                out.writeObject(ProjectStatus.SENDRESULT); // gửi kết quả sang client
                 System.out.println("SEND RESULT");
                 out.writeObject(score);
-
+                sendDeclaredMsg(scores, score, out);
+                System.out.println("sended msg");
 
             } catch (Exception e) {
             } finally {

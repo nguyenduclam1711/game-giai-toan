@@ -42,8 +42,8 @@ public class GameController {
         gameView.displayTheGame();
     }
     
-    public void showResult(int score) {
-        gameView.displayResultMsg(score);
+    public void showResult(int score, String declaredMsg) {
+        gameView.displayResultMsg(score, declaredMsg);
     }
 
     public void buttonPressed(String result) {

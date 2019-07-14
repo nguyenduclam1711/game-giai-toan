@@ -8,13 +8,11 @@ package Model;
 import java.io.Serializable;
 
 public enum ProjectStatus implements Serializable {
-    ERROR,
-    SUCCESS,
-    WIN,
-    LOSE,
-    ALREADYLOGINED,
-    TIMEOUT,
-    SENDRESULT,
-    STANDBY,
-    PLAY,
+    ERROR, //đăng nhập sai
+    SUCCESS, //đăng nhập đúng
+    ALREADYLOGINED, //đã đăng nhập
+    TIMEOUT, //hết giờ
+    SENDRESULT, //gửi kết quả
+    STANDBY, //chờ
+    PLAY, //chơi
 }

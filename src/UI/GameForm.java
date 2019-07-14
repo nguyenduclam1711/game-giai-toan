@@ -81,7 +81,7 @@ public class GameForm extends JFrame implements ActionListener {
         labelStandByMsg.setText("đợi người chơi");
         
         labelFinishMsg = new JLabel();
-        labelFinishMsg.setFont(new Font("Serif", Font.PLAIN, 25));
+        labelFinishMsg.setFont(new Font("Serif", Font.PLAIN, 23));
         labelStandByMsg.setHorizontalAlignment(JLabel.CENTER);
         labelStandByMsg.setVerticalAlignment(JLabel.CENTER);
         labelFinishMsg.setText("bạn đã trả lời hết câu hỏi");
@@ -97,19 +97,13 @@ public class GameForm extends JFrame implements ActionListener {
         btnAnswerD.setBounds(270, 270, btnWidth, btnHeight);
         labelQuestion.setBounds(150, 50, 140, 70);
         labelStandByMsg.setBounds(105, 50 , 250, 70);
-        labelResultMsg.setBounds(105, 50 , 250, 70);
+        labelResultMsg.setBounds(30, 50 , 400, 70);
         labelFinishMsg.setBounds(105, 50, 250, 70);
         
         panel = new JPanel();
         
         panel.setLayout(null);
         panel.add(labelStandByMsg);
-//        panel.add(btnAnswerA);
-//        panel.add(btnAnswerB);
-//        panel.add(btnAnswerC);
-//        panel.add(btnAnswerD);
-//        panel.add(labelQuestion);
-//        panel.add(progressBar);
 
         this.getContentPane().add(panel);
     }
@@ -122,7 +116,7 @@ public class GameForm extends JFrame implements ActionListener {
                 progressBar.setValue(i);
                 progressBar.repaint();
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (Exception e) {
                 }
             }
@@ -218,9 +212,9 @@ public class GameForm extends JFrame implements ActionListener {
         panel.repaint();
     }
     
-    public void displayResultMsg(int score) {
+    public void displayResultMsg(int score, String declaredMsg) {
         panel.removeAll();
-        labelResultMsg.setText("bạn đã làm đúng " + score + " câu ");
+        labelResultMsg.setText("bạn đã làm đúng " + score + " câu. " + declaredMsg);
         panel.add(labelResultMsg);
         panel.revalidate();
         panel.repaint();
